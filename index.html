@@ -1,0 +1,30 @@
+      const blob = new Blob(state.recordedChunks, { type: 'video/webm' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `live_waveform_${state.modScheme}_${Date.now()}.webm`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+    function autoRecordTenSec() {
+      if (state.isRecording) return;
+      startRecording();
+      let timeLeft = 10;
+      const originalLabel = document.getElementById('recordLabel').textContent;
+      const interval = setInterval(() => {
+        timeLeft--;
+        document.getElementById('recordLabel').textContent = `Recording (${timeLeft}s)...`;
+        if (timeLeft <= 0) {
+          clearInterval(interval);
+          stopRecording();
+        }
+      }, 1000);
+    }
+    // Start
+    updateParams();
+    render();
+  </script>
+</body>
+</html>
